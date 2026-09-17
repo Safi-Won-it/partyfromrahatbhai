@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Rahat Bhai's Party</title>
+  <style>
+    /* iOS Glassmorphism Global Theme */
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(circle at 15% 15%, #ff9a9e 0%, #fecfef 35%, #a1c4fd 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+      color: #1c1c1e;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 430px;
+      padding-bottom: 40px;
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.48);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .header-title {
+      font-size: 26px;
+      font-weight: 800;
+      text-align: center;
+      margin: 10px 0 20px 0;
+      color: #000;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #3a3a3c;
+    }
+
+    /* iOS Segmented Control */
+    .person-selector {
+      display: flex;
+      background: rgba(118, 118, 128, 0.15);
+      border-radius: 12px;
+      padding: 3px;
+      margin-bottom: 16px;
+    }
+
+    .person-btn {
+      flex: 1;
+      padding: 10px 0;
+      border: none;
+      background: transparent;
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #3a3a3c;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .person-btn.active {
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Work Days Input List */
+    .day-row {
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .day-title {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .work-toggle {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #48484a;
+      font-weight: 500;
+    }
+
+    .time-inputs {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .time-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .time-field label {
+      font-size: 11px;
+      color: #636366;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .time-field input[type="time"] {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      outline: none;
+    }
+
+    /* Action Buttons */
+    .btn-primary {
+      width: 100%;
+      background: #007aff;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.3);
+      transition: transform 0.1s ease, background 0.2s ease;
+      margin-top: 6px;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      background: #0062cc;
+    }
+
+    .btn-quick {
+      background: rgba(0, 122, 255, 0.1);
+      color: #007aff;
+      border: 1px solid rgba(0, 122, 255, 0.2);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    /* Suggestion Cards */
+    .match-card {
+      background: rgba(52, 199, 89, 0.15);
+      border: 1px solid rgba(52, 199, 89, 0.4);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .match-title {
+      font-weight: 700;
+      color: #1e7e34;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .match-desc {
+      font-size: 13px;
+      color: #1c1c1e;
+      line-height: 1.4;
+    }
+
+    /* Status Overview */
+    .status-item {
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .status-name {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .status-detail {
+      color: #48484a;
+      font-size: 12px;
+    }
+
+    .btn-clear {
+      width: 100%;
+      background: transparent;
+      color: #ff3b30;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="header-title">🎉 Rahat Bhai's Party</div>
+
+    <!-- STEP 1: Select Person & Enter Work Shift -->
+    <div class="glass-card">
+      <h2>1. Select Person</h2>
+      <div class="person-selector">
+        <button class="person-btn active" onclick="selectPerson('Safi')">Safi</button>
+        <button class="person-btn" onclick="selectPerson('Shakil')">Shakil</button>
+        <button class="person-btn" onclick="selectPerson('Rahat')">Rahat</button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>2. Work Shift (Next 7 Days)</h2>
+        <button class="btn-quick" onclick="applyDefaultShift()">Set All 9am-5pm</button>
+      </div>
+
+      <div id="workDaysContainer">
+        <!-- Dynamic work day inputs rendered here -->
+      </div>
+
+      <button class="btn-primary" onclick="saveWorkSchedule()">Save Work Hours</button>
+    </div>
+
+    <!-- STEP 2: Best Dinner Suggestions -->
+    <div class="glass-card">
+      <h2>💡 Best Dinner Time Suggestions</h2>
+      <div id="recommendationArea">
+        <p style="font-size: 14px; color: #636366; text-align: center;">Enter work hours for Safi, Shakil, and Rahat to calculate dinner time.</p>
+      </div>
+    </div>
+
+    <!-- STEP 3: Saved Schedules Overview -->
+    <div class="glass-card">
+      <h2>📋 Everyone's Saved Work Shifts</h2>
+      <div id="statusList">
+        <!-- Overview rendered here -->
+      </div>
+      <button class="btn-clear" onclick="clearData()">Reset All Data</button>
+    </div>
+  </div>
+
+  <script>
+    // State Variables
+    let selectedPerson = 'Safi';
+    let upcomingDays = [];
+
+    // Local Storage: { "Safi": { "2026-09-18": { working: true, start: "09:00", end: "17:00" } } }
+    let savedData = JSON.parse(localStorage.getItem('rahat_party_work_data')) || {
+      'Safi': {},
+      'Shakil': {},
+      'Rahat': {}
+    };
+
+    // Generate upcoming 7 days
+    function generateUpcomingDays() {
+      const dates = [];
+      const today = new Date();
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + i);
+
+        const isoDate = d.toISOString().split('T')[0];
+        const dayName = i === 0 ? 'Today' : d.toLocaleDateString('en-US', { weekday: 'short' });
+        const dayDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        dates.push({ isoDate, dayName, dayDate });
+      }
+      return dates;
+    }
+
+    // Initialize App
+    function init() {
+      upcomingDays = generateUpcomingDays();
+      renderWorkInputs();
+      renderResultsAndOverview();
+    }
+
+    // Switch active person
+    function selectPerson(name) {
+      selectedPerson = name;
+      document.querySelectorAll('.person-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText === name);
+      });
+      renderWorkInputs();
+    }
+
+    // Render Work Shift Inputs for selected person
+    function renderWorkInputs() {
+      const container = document.getElementById('workDaysContainer');
+      container.innerHTML = '';
+
+      const personSchedule = savedData[selectedPerson] || {};
+
+      upcomingDays.forEach(day => {
+        const dayData = personSchedule[day.isoDate] || { working: true, start: "09:00", end: "17:00" };
+
+        const dayRow = document.createElement('div');
+        dayRow.className = 'day-row';
+        dayRow.innerHTML = `
+          <div class="day-header">
+            <span class="day-title">${day.dayName} (${day.dayDate})</span>
+            <label class="work-toggle">
+              <input type="checkbox" id="work_${day.isoDate}" ${dayData.working ? 'checked' : ''} onchange="toggleWorkFields('${day.isoDate}')">
+              Working
+            </label>
+          </div>
+          <div class="time-inputs" id="times_${day.isoDate}" style="display: ${dayData.working ? 'flex' : 'none'};">
+            <div class="time-field">
+              <label>Work Start</label>
+              <input type="time" id="start_${day.isoDate}" value="${dayData.start}">
+            </div>
+            <div class="time-field">
+              <label>Work End</label>
+              <input type="time" id="end_${day.isoDate}" value="${dayData.end}">
+            </div>
+          </div>
+        `;
+        container.appendChild(dayRow);
+      });
+    }
+
+    // Toggle Work inputs visibility
+    function toggleWorkFields(isoDate) {
+      const isChecked = document.getElementById(`work_${isoDate}`).checked;
+      document.getElementById(`times_${isoDate}`).style.display = isChecked ? 'flex' : 'none';
+    }
+
+    // Quick preset button for 9am - 5pm
+    function applyDefaultShift() {
+      upcomingDays.forEach(day => {
+        const workCheck = document.getElementById(`work_${day.isoDate}`);
+        const startInput = document.getElementById(`start_${day.isoDate}`);
+        const endInput = document.getElementById(`end_${day.isoDate}`);
+
+        if (workCheck && startInput && endInput) {
+          workCheck.checked = true;
+          startInput.value = "09:00";
+          endInput.value = "17:00";
+          toggleWorkFields(day.isoDate);
+        }
+      });
+    }
+
+    // Save schedule to LocalStorage
+    function saveWorkSchedule() {
+      if (!savedData[selectedPerson]) savedData[selectedPerson] = {};
+
+      upcomingDays.forEach(day => {
+        const isWorking = document.getElementById(`work_${day.isoDate}`).checked;
+        const start = document.getElementById(`start_${day.isoDate}`).value;
+        const end = document.getElementById(`end_${day.isoDate}`).value;
+
+        savedData[selectedPerson][day.isoDate] = { working: isWorking, start, end };
+      });
+
+      localStorage.setItem('rahat_party_work_data', JSON.stringify(savedData));
+      alert(`Work hours saved for ${selectedPerson}!`);
+      renderResultsAndOverview();
+    }
+
+    // Convert time string "HH:MM" to minutes from midnight
+    function timeToMins(t) {
+      if (!t) return 0;
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    // Format minutes back to 12-hour format "7:30 PM"
+    function minsTo12H(mins) {
+      let h = Math.floor(mins / 60);
+      const m = mins % 60;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      h = h ? h : 12; 
+      const mStr = m < 10 ? '0' + m : m;
+      return `${h}:${mStr} ${ampm}`;
+    }
+
+    // Calculate common dinner windows and render summary
+    function renderResultsAndOverview() {
+      const recArea = document.getElementById('recommendationArea');
+      const statusList = document.getElementById('statusList');
+      recArea.innerHTML = '';
+      statusList.innerHTML = '';
+
+      const people = ['Safi', 'Shakil', 'Rahat'];
+
+      // Render Saved Shifts Summary
+      people.forEach(p => {
+        const hasData = savedData[p] && Object.keys(savedData[p]).length > 0;
+        let details = 'No shift entered yet';
+
+        if (hasData) {
+          const shiftCounts = Object.values(savedData[p]).filter(x => x.working).length;
+          details = `Working ${shiftCounts} of next 7 days`;
+        }
+
+        statusList.innerHTML += `
+          <div class="status-item">
+            <div class="status-name">${p}</div>
+            <div class="status-detail">${details}</div>
+          </div>
+        `;
+      });
+
+      // Calculate Dinner Options (Target Dinner Window: 5:00 PM / 17:00 to 11:00 PM / 23:00)
+      const DINNER_START = 17 * 60; // 5:00 PM
+      const DINNER_END = 23 * 60;   // 11:00 PM
+
+      let matchesFound = 0;
+
+      upcomingDays.forEach(day => {
+        let earliestFree = DINNER_START;
+        let everyoneHasData = true;
+
+        people.forEach(p => {
+          const pDay = savedData[p] ? savedData[p][day.isoDate] : null;
+
+          if (!pDay) {
+            everyoneHasData = false;
+            return;
+          }
+
+          if (pDay.working) {
+            const endMins = timeToMins(pDay.end);
+            // If work finishes during or after dinner start, update earliest free time
+            if (endMins > earliestFree) {
+              earliestFree = endMins;
+            }
+          }
+        });
+
+        if (everyoneHasData) {
+          // If everyone is free before 10:30 PM, we have a valid dinner slot!
+          if (earliestFree < (22 * 60 + 30)) {
+            matchesFound++;
+            const freeTimeStr = minsTo12H(earliestFree);
+            recArea.innerHTML += `
+              <div class="match-card">
+                <div class="match-title">🍽️ ${day.dayName} (${day.dayDate})</div>
+                <div class="match-desc">
+                  <strong>Best Dinner Time:</strong> ${freeTimeStr} onwards.<br>
+                  <span style="font-size:12px; color:#555;">(Everyone is finished with work by ${freeTimeStr})</span>
+                </div>
+              </div>
+            `;
+          }
+        }
+      });
+
+      if (!matchesFound) {
+        recArea.innerHTML = `<p style="font-size: 14px; color: #636366; text-align: center;">No common free dinner time found yet. Make sure Safi, Shakil, and Rahat have all saved their work hours above!</p>`;
+      }
+    }
+
+    // Reset All Data
+    function clearData() {
+      if (confirm('Clear all saved work schedules?')) {
+        localStorage.removeItem('rahat_party_work_data');
+        savedData = { 'Safi': {}, 'Shakil': {}, 'Rahat': {} };
+        init();
+      }
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
